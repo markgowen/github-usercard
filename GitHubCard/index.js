@@ -24,8 +24,6 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
-
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -55,12 +53,13 @@ const followersArray = [];
 */
 const container = document.querySelector('.container');
 let data = {};
+let followersArray = [];
 
 // const axios = require('axios');
 
 
 
-function gitHubCard(data) {
+function createGitHubCard(data) {
   const card = document.createElement('div');
   const cardImg = document.createElement('img');
   const cardInfo = document.createElement('div');
@@ -94,10 +93,10 @@ function gitHubCard(data) {
   cardName.textContent = data.name;
   cardUser.textContent = data.login;
   location.textContent = `Location: ${data.location}`;
-  profileLink.textContent = data.html_url;
-  followers.textContent = data.followers;
-  following.textContent = data.following;
-  userBio.textContent = data.bio;
+  profileLink.textContent = `Profile: ${data.html_url}`;
+  followers.textContent = `Followers: ${data.followers}`;
+  following.textContent = `Following: ${data.following}`;
+  userBio.textContent = `Bio: ${data.bio}`;
   console.log(card);
   return card;
 }
@@ -109,7 +108,22 @@ axios
   .then(function(response) {
     console.log(response);
     data = response.data;
-    container.appendChild(gitHubCard(data));
+    container.appendChild(createGitHubCard(data));
+  })
+  .catch(function(error) {
+    console.log(error);
+  })
+  .finally(function() {});
+
+  axios
+  .get('https://api.github.com/users/markgowen/followers')
+  .then(function(response) {
+    console.log(response);
+    followersArray = response.data;
+    followersArray.forEach(data => {
+      console.log('getting followers data');
+      container.appendChild(createGitHubCard(data));
+    });
   })
   .catch(function(error) {
     console.log(error);

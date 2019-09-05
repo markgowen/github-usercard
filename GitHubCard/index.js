@@ -53,3 +53,66 @@ const followersArray = [];
   luishrd
   bigknell
 */
+const container = document.querySelector('.container');
+let data = {};
+
+// const axios = require('axios');
+
+
+
+function gitHubCard(data) {
+  const card = document.createElement('div');
+  const cardImg = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const cardName = document.createElement('h3');
+  const cardUser = document.createElement('p');
+  const location = document.createElement('p');
+  const profileLink = document.createElement('p');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const userBio = document.createElement('p');
+
+  card.append(cardImg);
+  card.append(cardInfo);
+  cardInfo.append(cardName);
+  cardInfo.append(cardUser);
+  cardInfo.append(cardUser);
+  cardInfo.append(location);
+  cardInfo.append(profileLink);
+  cardInfo.append(followers);
+  cardInfo.append(following);
+  cardInfo.append(userBio);
+
+  card.classList.add('card');
+  card.classList.add('img');
+  cardInfo.classList.add('card-info');
+  cardInfo.classList.add('p');
+  cardName.classList.add('name');
+  cardUser.classList.add('username');
+
+  cardImg.src = data.avatar_url;
+  cardName.textContent = data.name;
+  cardUser.textContent = data.login;
+  location.textContent = `Location: ${data.location}`;
+  profileLink.textContent = data.html_url;
+  followers.textContent = data.followers;
+  following.textContent = data.following;
+  userBio.textContent = data.bio;
+  console.log(card);
+  return card;
+}
+
+
+
+axios
+  .get('https://api.github.com/users/markgowen')
+  .then(function(response) {
+    console.log(response);
+    data = response.data;
+    container.appendChild(gitHubCard(data));
+  })
+  .catch(function(error) {
+    console.log(error);
+  })
+  .finally(function() {});
+

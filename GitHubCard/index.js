@@ -57,8 +57,6 @@ let followersArray = [];
 
 // const axios = require('axios');
 
-
-
 function createGitHubCard(data) {
   const card = document.createElement('div');
   const cardImg = document.createElement('img');
@@ -101,8 +99,6 @@ function createGitHubCard(data) {
   return card;
 }
 
-
-
 axios
   .get('https://api.github.com/users/markgowen')
   .then(function(response) {
@@ -115,18 +111,21 @@ axios
   })
   .finally(function() {});
 
-  axios
+axios
   .get('https://api.github.com/users/markgowen/followers')
   .then(function(response) {
     console.log(response);
     followersArray = response.data;
     followersArray.forEach(data => {
       console.log('getting followers data');
-      container.appendChild(createGitHubCard(data));
+      axios.get(data.url).then(function(response) {
+        console.log(response);
+        data = response.data;
+        container.appendChild(createGitHubCard(data));
+      });
     });
   })
   .catch(function(error) {
     console.log(error);
   })
   .finally(function() {});
-

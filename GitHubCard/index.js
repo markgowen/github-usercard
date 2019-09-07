@@ -24,8 +24,6 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
-
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
@@ -53,3 +51,81 @@ const followersArray = [];
   luishrd
   bigknell
 */
+const container = document.querySelector('.container');
+let data = {};
+let followersArray = [];
+
+// const axios = require('axios');
+
+function createGitHubCard(data) {
+  const card = document.createElement('div');
+  const cardImg = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const cardName = document.createElement('h3');
+  const cardUser = document.createElement('p');
+  const location = document.createElement('p');
+  const profileLink = document.createElement('p');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const userBio = document.createElement('p');
+
+  card.append(cardImg);
+  card.append(cardInfo);
+  cardInfo.append(cardName);
+  cardInfo.append(cardUser);
+  cardInfo.append(cardUser);
+  cardInfo.append(location);
+  cardInfo.append(profileLink);
+  cardInfo.append(followers);
+  cardInfo.append(following);
+  cardInfo.append(userBio);
+
+  card.classList.add('card');
+  card.classList.add('img');
+  cardInfo.classList.add('card-info');
+  cardInfo.classList.add('p');
+  cardName.classList.add('name');
+  cardUser.classList.add('username');
+
+  cardImg.src = data.avatar_url;
+  cardName.textContent = data.name;
+  cardUser.textContent = data.login;
+  location.textContent = `Location: ${data.location}`;
+  profileLink.textContent = `Profile: ${data.html_url}`;
+  followers.textContent = `Followers: ${data.followers}`;
+  following.textContent = `Following: ${data.following}`;
+  userBio.textContent = `Bio: ${data.bio}`;
+  console.log(card);
+  return card;
+}
+
+axios
+  .get('https://api.github.com/users/markgowen')
+  .then(function(response) {
+    console.log(response);
+    data = response.data;
+    container.appendChild(createGitHubCard(data));
+  })
+  .catch(function(error) {
+    console.log(error);
+  })
+  .finally(function() {});
+
+axios
+  .get('https://api.github.com/users/markgowen/followers')
+  .then(function(response) {
+    console.log(response);
+    followersArray = response.data;
+    followersArray.forEach(data => {
+      console.log('getting followers data');
+      axios.get(data.url).then(function(response) {
+        console.log(response);
+        data = response.data;
+        container.appendChild(createGitHubCard(data));
+      });
+    });
+  })
+  .catch(function(error) {
+    console.log(error);
+  })
+  .finally(function() {});
